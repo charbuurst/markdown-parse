@@ -10,22 +10,29 @@ public class MarkdownParse {
         // find the next [, then find the ], then find the (, then take up to
         // the next )
         int currentIndex = 0;
-
         while(currentIndex < markdown.length()) {
+            
             int nextOpenBracket = markdown.indexOf("[", currentIndex);
             int nextCloseBracket = markdown.indexOf("]", nextOpenBracket);
             int openParen = markdown.indexOf("(", nextCloseBracket);
             int closeParen = markdown.indexOf(")", openParen);
-            if (markdown.charAt(nextOpenBracket-1) == '!') {
-                currentIndex = closeParen + 1;
+           
+             //difference between Image vs Link
+             //check if link on first line
+             if(nextOpenBracket != 0 && markdown.charAt(nextOpenBracket-1)=='!'){
+                currentIndex = closeParen+1;
                 continue;
             }
+
+            //fix missing parentheses
+            if(openParen == -1){
+                return toReturn;
+            }
+
             toReturn.add(markdown.substring(openParen + 1, closeParen));
-            // System.out.println(markdown.charAt(currentIndex));
             currentIndex = closeParen + 1;
-            System.out.println(currentIndex);
+            
         }
-        
         return toReturn;
     }
     public static void main(String[] args) throws IOException {
